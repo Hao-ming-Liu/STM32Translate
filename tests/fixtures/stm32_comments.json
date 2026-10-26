@@ -1,0 +1,23 @@
+[
+  {"topic":"GPIO 初始化","source":"@brief Initializes the GPIO peripheral.","keep":["@brief","GPIO"]},
+  {"topic":"GPIO 参数","source":"@param[in] GPIOx Select the GPIO peripheral.","keep":["@param[in]","GPIOx","GPIO"]},
+  {"topic":"GPIO 引脚","source":"@param GPIO_Pin Specifies the pin to be configured. This parameter can be GPIO_PIN_0 or GPIO_PIN_5.","keep":["@param","GPIO_Pin","GPIO_PIN_0","GPIO_PIN_5"]},
+  {"topic":"GPIO 读取","source":"Read the input level of the specified pin.","keep":[]},
+  {"topic":"GPIO 上拉","source":"Configure the pin as an input with a pull-up resistor.","keep":[]},
+  {"topic":"定时器预分频","source":"The prescaler value must be between 0 and 65535.","keep":["0","65535"]},
+  {"topic":"定时器周期","source":"Set TIM_Period to 999 before starting the timer.","keep":["TIM_Period","999"]},
+  {"topic":"定时器中断","source":"Enable the update interrupt only after clearing the pending flag.","keep":[]},
+  {"topic":"PWM 占空比","source":"A duty cycle of 50 percent produces a square wave.","keep":["50"]},
+  {"topic":"启动函数","source":"Call HAL_TIM_Base_Start_IT() to start the timer in interrupt mode.","keep":["HAL_TIM_Base_Start_IT()"]},
+  {"topic":"中断禁止","source":"Do not enable the interrupt before configuring its priority.","keep":[]},
+  {"topic":"清除标志","source":"Clear the pending interrupt flag before returning.","keep":[]},
+  {"topic":"DMA 缓冲区","source":"The DMA buffer must remain valid until the transfer is complete.","keep":["DMA"]},
+  {"topic":"DMA 方向","source":"Transfer data from the peripheral to memory.","keep":[]},
+  {"topic":"DMA 循环","source":"In circular mode, the DMA transfer restarts automatically.","keep":["DMA"]},
+  {"topic":"ADC 转换","source":"Start the ADC conversion and wait for the end of conversion flag.","keep":["ADC"]},
+  {"topic":"串口超时","source":"@param Timeout Specifies the timeout duration in milliseconds.","keep":["@param","Timeout"]},
+  {"topic":"串口状态","source":"@retval HAL_OK The transmission completed successfully.","keep":["@retval","HAL_OK"]},
+  {"topic":"忙碌返回值","source":"@retval HAL_BUSY A previous transfer is still in progress.","keep":["@retval","HAL_BUSY"]},
+  {"topic":"地址和位掩码","source":"Write 0x40020000 to the address register and set bit 7.","keep":["0x40020000","7"]},
+  {"topic":"完整注释与代码","source":"/**\n * @brief Resets the peripheral.\n * @param[in] htim Pointer to the timer handle.\n * @return Returns the current state.\n */\nHAL_StatusTypeDef HAL_TIM_Base_Stop(TIM_HandleTypeDef *htim);","keep":["@brief","@param[in] htim","@return","HAL_StatusTypeDef HAL_TIM_Base_Stop(TIM_HandleTypeDef *htim);"]}
+]

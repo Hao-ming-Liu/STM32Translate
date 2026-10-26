@@ -1,0 +1,21 @@
+{
+  "archive_crc": "pass",
+  "model_hashes": "pass",
+  "extracted_worker_result": {
+    "id": 1,
+    "text": "预缩放值必须在0到65535之间.",
+    "warnings": [],
+    "elapsed": 0.6519590000389144,
+    "pid": 2828,
+    "network_blocked": true
+  },
+  "gui_store_ready_seconds": 0.6149832999799401,
+  "gui_idle_rss_mib": 48.0,
+  "gui_modules": [
+    "STM32Translate/_internal/python312.dll",
+    "STM32Translate/_internal/tcl86t.dll",
+    "STM32Translate/_internal/tk86t.dll"
+  ],
+  "note": "Hidden GUI startup smoke test; store-ready time is not time to first paint.",
+  "module_paths_note": "Paths made relative to the release folder for publication."
+}

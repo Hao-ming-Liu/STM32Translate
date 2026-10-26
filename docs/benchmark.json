@@ -1,0 +1,238 @@
+{
+  "os": 26200,
+  "network_test": "Python socket connection and DNS APIs disabled inside worker; PATH contains only Windows System32; no system network adapters changed.",
+  "case_count": 21,
+  "cold_seconds": 0.3859607999911532,
+  "warm_median_seconds": 0.04613225004868582,
+  "worker_peak_rss_mib": 141.8984375,
+  "idle_seconds_configured": 300,
+  "idle_release_measured_seconds": 300.0,
+  "released_engine_pid": 18448,
+  "runtime_modules": [
+    "STM32Translate/_internal/ctranslate2/ctranslate2.dll",
+    "STM32Translate/_internal/python312.dll",
+    "STM32Translate/_internal/ctranslate2/_ext.cp312-win_amd64.pyd",
+    "STM32Translate/_internal/ctranslate2/libiomp5md.dll"
+  ],
+  "zip_mib": 122.7125940322876,
+  "folder_mib": 223.47138500213623,
+  "zip_sha256": "b3b2a91e297048a74fbc8b104348f5bce55fda3650250eaf2a180cb1bfa8aaec",
+  "cases": [
+    {
+      "topic": "GPIO 初始化",
+      "source": "@brief Initializes the GPIO peripheral.",
+      "keep": [
+        "@brief",
+        "GPIO"
+      ],
+      "result": "@brief 初始化 GPIO外围.",
+      "warnings": [],
+      "wall_seconds": 0.3859607999911532
+    },
+    {
+      "topic": "GPIO 参数",
+      "source": "@param[in] GPIOx Select the GPIO peripheral.",
+      "keep": [
+        "@param[in]",
+        "GPIOx",
+        "GPIO"
+      ],
+      "result": "@param[in] GPIOx 选择 GPIO 外围 。",
+      "warnings": [],
+      "wall_seconds": 0.042680200072936714
+    },
+    {
+      "topic": "GPIO 引脚",
+      "source": "@param GPIO_Pin Specifies the pin to be configured. This parameter can be GPIO_PIN_0 or GPIO_PIN_5.",
+      "keep": [
+        "@param",
+        "GPIO_Pin",
+        "GPIO_PIN_0",
+        "GPIO_PIN_5"
+      ],
+      "result": "@param GPIO_Pin 指定要配置的 Pin。此参数可以是 GPIO_PIN_0 或 GPIO_PIN_5 。",
+      "warnings": [],
+      "wall_seconds": 0.09118360001593828
+    },
+    {
+      "topic": "GPIO 读取",
+      "source": "Read the input level of the specified pin.",
+      "keep": [],
+      "result": "读取指定指针的输入级别。",
+      "warnings": [],
+      "wall_seconds": 0.03959500009659678
+    },
+    {
+      "topic": "GPIO 上拉",
+      "source": "Configure the pin as an input with a pull-up resistor.",
+      "keep": [],
+      "result": "配置披针作为输入,并带有拉升阻塞器.",
+      "warnings": [],
+      "wall_seconds": 0.05118410009890795
+    },
+    {
+      "topic": "定时器预分频",
+      "source": "The prescaler value must be between 0 and 65535.",
+      "keep": [
+        "0",
+        "65535"
+      ],
+      "result": "预缩放值必须在0到65535之间.",
+      "warnings": [],
+      "wall_seconds": 0.04736230010166764
+    },
+    {
+      "topic": "定时器周期",
+      "source": "Set TIM_Period to 999 before starting the timer.",
+      "keep": [
+        "TIM_Period",
+        "999"
+      ],
+      "result": "在启动定时器前将 TIM_Period 设定为 999 。",
+      "warnings": [],
+      "wall_seconds": 0.1431720000691712
+    },
+    {
+      "topic": "定时器中断",
+      "source": "Enable the update interrupt only after clearing the pending flag.",
+      "keep": [],
+      "result": "启用更新仅在清除待决旗帜后中断 。",
+      "warnings": [],
+      "wall_seconds": 0.044902199995703995
+    },
+    {
+      "topic": "PWM 占空比",
+      "source": "A duty cycle of 50 percent produces a square wave.",
+      "keep": [
+        "50"
+      ],
+      "result": "50%的值班周期产生平面波。",
+      "warnings": [],
+      "wall_seconds": 0.04087159992195666
+    },
+    {
+      "topic": "启动函数",
+      "source": "Call HAL_TIM_Base_Start_IT() to start the timer in interrupt mode.",
+      "keep": [
+        "HAL_TIM_Base_Start_IT()"
+      ],
+      "result": "Call HAL_TIM_Base_Start_IT() to start the timer in interrupt mode.",
+      "warnings": [
+        "第 1 个片段的代码标识符或数值未能安全恢复，已保留该片段原文。"
+      ],
+      "wall_seconds": 0.15570140001364052
+    },
+    {
+      "topic": "中断禁止",
+      "source": "Do not enable the interrupt before configuring its priority.",
+      "keep": [],
+      "result": "在配置其优先级之前不要允许中断 。",
+      "warnings": [],
+      "wall_seconds": 0.042746499995701015
+    },
+    {
+      "topic": "清除标志",
+      "source": "Clear the pending interrupt flag before returning.",
+      "keep": [],
+      "result": "返回前清除待发中断旗 。",
+      "warnings": [],
+      "wall_seconds": 0.04175259999465197
+    },
+    {
+      "topic": "DMA 缓冲区",
+      "source": "The DMA buffer must remain valid until the transfer is complete.",
+      "keep": [
+        "DMA"
+      ],
+      "result": "DMA缓冲器必须保持有效,直到移交完成.",
+      "warnings": [],
+      "wall_seconds": 0.05660500004887581
+    },
+    {
+      "topic": "DMA 方向",
+      "source": "Transfer data from the peripheral to memory.",
+      "keep": [],
+      "result": "从外围传输数据到内存.",
+      "warnings": [],
+      "wall_seconds": 0.0352630999404937
+    },
+    {
+      "topic": "DMA 循环",
+      "source": "In circular mode, the DMA transfer restarts automatically.",
+      "keep": [
+        "DMA"
+      ],
+      "result": "在循环模式中,DMA传输自动重启.",
+      "warnings": [],
+      "wall_seconds": 0.0525968000292778
+    },
+    {
+      "topic": "ADC 转换",
+      "source": "Start the ADC conversion and wait for the end of conversion flag.",
+      "keep": [
+        "ADC"
+      ],
+      "result": "启动 ADC 转换,等待转换旗结束.",
+      "warnings": [],
+      "wall_seconds": 0.05582499993033707
+    },
+    {
+      "topic": "串口超时",
+      "source": "@param Timeout Specifies the timeout duration in milliseconds.",
+      "keep": [
+        "@param",
+        "Timeout"
+      ],
+      "result": "@param Timeout 指定超时时间,以毫秒计。",
+      "warnings": [],
+      "wall_seconds": 0.04362700006458908
+    },
+    {
+      "topic": "串口状态",
+      "source": "@retval HAL_OK The transmission completed successfully.",
+      "keep": [
+        "@retval",
+        "HAL_OK"
+      ],
+      "result": "@retval HAL_OK 传输成功.",
+      "warnings": [],
+      "wall_seconds": 0.035409399890340865
+    },
+    {
+      "topic": "忙碌返回值",
+      "source": "@retval HAL_BUSY A previous transfer is still in progress.",
+      "keep": [
+        "@retval",
+        "HAL_BUSY"
+      ],
+      "result": "@retval HAL_BUSY A前次调剂仍在进行中.",
+      "warnings": [],
+      "wall_seconds": 0.043736200081184506
+    },
+    {
+      "topic": "地址和位掩码",
+      "source": "Write 0x40020000 to the address register and set bit 7.",
+      "keep": [
+        "0x40020000",
+        "7"
+      ],
+      "result": "将 0x40020000 写入地址寄存器并设置位元 7 。",
+      "warnings": [],
+      "wall_seconds": 0.07234980002976954
+    },
+    {
+      "topic": "完整注释与代码",
+      "source": "/**\n * @brief Resets the peripheral.\n * @param[in] htim Pointer to the timer handle.\n * @return Returns the current state.\n */\nHAL_StatusTypeDef HAL_TIM_Base_Stop(TIM_HandleTypeDef *htim);",
+      "keep": [
+        "@brief",
+        "@param[in] htim",
+        "@return",
+        "HAL_StatusTypeDef HAL_TIM_Base_Stop(TIM_HandleTypeDef *htim);"
+      ],
+      "result": "/**\n * @brief 整修外围\n * @param[in] htim 指向计时手柄.\n * @return 返回当前状态。\n */\nHAL_StatusTypeDef HAL_TIM_Base_Stop(TIM_HandleTypeDef *htim);",
+      "warnings": [],
+      "wall_seconds": 0.047540999948978424
+    }
+  ],
+  "module_paths_note": "Paths made relative to the release folder for publication."
+}

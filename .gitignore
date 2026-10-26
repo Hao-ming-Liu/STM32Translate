@@ -1,0 +1,16 @@
+.venv/
+.runtime/
+.native-test-tmp*/
+__pycache__/
+.pytest_cache/
+build/
+dist/
+downloads/
+models/
+data/
+*.zip
+*.pyc
+.env
+.env.*
+docs/implementation-ledger.md
+docs/superpowers/
