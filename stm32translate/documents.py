@@ -15,9 +15,12 @@ class Translation:
 
 # Only high-confidence technical tokens; ordinary English remains translatable.
 _NUMBER = re.compile(r'(?<![A-Za-z0-9_])[-+]?(?:0[xX][\da-fA-F]+|\d+(?:\.\d+)?(?:[eE][-+]?\d+)?)(?:[uUlLfF]+)?(?![A-Za-z0-9_])')
+# Capitalization alone is not evidence of code (e.g. PRESENT or ENABLE).
+# Preserve known technical abbreviations, numbered names, and explicit code.
+_ACRONYMS = r'GPIO|DMA|ADC|DAC|PWM|NVIC|RCC|EXTI|UART|USART|SPI|I2C|I2S|CAN|USB|CPU|MCU|RAM|ROM|SRAM|DRAM|FLASH|EEPROM|RTC|CRC|RNG|FPU|MPU|MMU|HAL|LL|CMSIS|RTOS|SWD|JTAG|IRQ|ISR|APB|AHB|PLL|HSE|HSI|LSE|LSI|SYSCLK|HCLK|PCLK|FIFO|MSB|LSB|LED|LCD|VDD|VSS'
 _TOKEN = re.compile(
     r'`[^`\n]+`'
-    r'|\b(?:[A-Za-z_]\w*_\w+|[A-Z][A-Z0-9]{1,}|[a-z]+[A-Z]\w*|'
+    r'|\b(?:[A-Za-z_]\w*_\w+|' + _ACRONYMS + r'|[A-Z][A-Z0-9]*\d[A-Z0-9]*|[a-z]+[A-Z]\w*|'
     r'[A-Za-z_]\w*(?=\s*\())\b(?:\([^()\n]*\))?'
     r'|' + _NUMBER.pattern
 )
@@ -103,7 +106,11 @@ def _protect(text: str, parameter_names: set[str]) -> tuple[str, list[tuple[str,
     pattern = _TOKEN
     if parameter_names:
         pattern = re.compile(_TOKEN.pattern + r'|(?<!\w)(?:' + '|'.join(re.escape(n) for n in sorted(parameter_names, key=len, reverse=True)) + r')(?!\w)')
-    return pattern.sub(replace, text), tokens
+    protected = pattern.sub(replace, text)
+    # The small translation model handles natural-language casing much better
+    # than all-caps headings. Markers contain digits and are not matched here.
+    protected = re.sub(r'\b[A-Z]{2,}\b', lambda m: m.group().lower(), protected)
+    return protected, tokens
 
 
 def _restore(text: str, tokens: list[tuple[str, str]]) -> str | None:
@@ -147,6 +154,7 @@ def translate_document(text: str, batch_translate: Callable[[list[str]], list[st
     in_code = False
     brace_depth = 0
     parameter_names = set(re.findall(r'[@\\](?:param|tparam)(?:\[[^\]]*\])?\s+(?:\[[^\]]+\]\s*)?([A-Za-z_]\w*)', text))
+    parameter_names.update(re.findall(r'^\s*#\s*define\s+([A-Za-z_]\w*)', text, re.MULTILINE))
     for raw in text.splitlines(keepends=True):
         line = raw.rstrip('\r\n')
         ending = raw[len(line):]

@@ -1,6 +1,7 @@
 """Extract the release ZIP and smoke-test its runtime without system Python paths."""
 from pathlib import Path
 import hashlib
+import argparse
 import json
 import os
 import subprocess
@@ -14,7 +15,10 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def main():
-    archive = ROOT / 'dist/STM32Translate-1.0.0-win64-full.zip'
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--dist-dir', default='dist')
+    args = parser.parse_args()
+    archive = ROOT / args.dist_dir / 'STM32Translate-1.0.1-win64-full.zip'
     env = dict(os.environ, PATH=os.environ.get('SystemRoot', r'C:\Windows') + '\\System32',
                STM32_TRANSLATE_OFFLINE_TEST='1')
     for name in ('PYTHONPATH', 'PYTHONHOME', 'TCL_LIBRARY', 'TK_LIBRARY', 'VIRTUAL_ENV'):
@@ -33,13 +37,17 @@ def main():
         for name, expected in json.loads((model / 'SOURCE.json').read_text(encoding='utf8'))['files_sha256'].items():
             with (model / name).open('rb') as f:
                 assert hashlib.file_digest(f, 'sha256').hexdigest() == expected, name
+        sources = ['The prescaler value must be between 0 and 65535.', 'PRESENT', 'THE DEVICE IS PRESENT.', 'ENABLE THE TIMER']
         worker = subprocess.run([str(folder / 'TranslateWorker.exe'), '--worker'], cwd=folder, env=env,
-                                input=json.dumps({'id':1, 'text':'The prescaler value must be between 0 and 65535.'})+'\n',
+                                input=''.join(json.dumps({'id':i, 'text':s})+'\n' for i,s in enumerate(sources)),
                                 capture_output=True, text=True, encoding='utf8', timeout=45,
                                 creationflags=subprocess.CREATE_NO_WINDOW, check=True)
-        result = json.loads(worker.stdout)
-        assert result['network_blocked'] and not result.get('error'), result
-        assert '0' in result['text'] and '65535' in result['text'], result
+        results = [json.loads(line) for line in worker.stdout.splitlines()]
+        assert len(results) == len(sources)
+        for i, result in enumerate(results):
+            assert result['id'] == i and result['network_blocked'] and not result.get('error') and not result['warnings'], result
+            assert any('\u4e00' <= c <= '\u9fff' for c in result['text']), result
+        assert '0' in results[0]['text'] and '65535' in results[0]['text'], results[0]
         startup = subprocess.STARTUPINFO()
         startup.dwFlags |= subprocess.STARTF_USESHOWWINDOW
         startup.wShowWindow = subprocess.SW_HIDE
@@ -59,9 +67,9 @@ def main():
             assert any('tk86' in m.lower() for m in modules), modules
             assert all(str(folder).lower() in m.lower() for m in modules), modules
             assert not process.children(), 'Idle GUI unexpectedly loaded a worker'
-            report = {'archive_crc':'pass', 'model_hashes':'pass', 'extracted_worker_result':result,
+            report = {'version':'1.0.1', 'archive_crc':'pass', 'model_hashes':'pass', 'extracted_worker_results':results,
                       'gui_store_ready_seconds':store_ready_seconds,
-                      'gui_idle_rss_mib':process.memory_info().rss/1048576, 'gui_modules':modules,
+                      'gui_idle_rss_mib':process.memory_info().rss/1048576, 'gui_modules':[str(Path(m).relative_to(folder)) for m in modules],
                       'note':'Hidden GUI startup smoke test; store-ready time is not time to first paint.'}
         finally:
             if gui.poll() is None:

@@ -17,6 +17,22 @@ MODEL = ROOT / 'models' / 'en_zh'
 
 
 @pytest.mark.skipif(not (MODEL / 'model/model.bin').exists(), reason='download model first')
+def test_real_worker_translates_uppercase_english_offline():
+    sources = ['PRESENT', 'THE DEVICE IS PRESENT.', 'ENABLE THE TIMER']
+    env = dict(os.environ, STM32_TRANSLATE_OFFLINE_TEST='1', PYTHONUTF8='1')
+    p = subprocess.run([sys.executable, str(ROOT / 'run.py'), '--worker', '--model', str(MODEL)],
+                       input=''.join(json.dumps({'id': i, 'text': s}) + '\n' for i, s in enumerate(sources)),
+                       text=True, encoding='utf8', capture_output=True, env=env, timeout=40)
+    assert p.returncode == 0, p.stderr
+    results = [json.loads(line) for line in p.stdout.splitlines()]
+    assert len(results) == len(sources)
+    for i, result in enumerate(results):
+        assert result['id'] == i and not result.get('error') and not result['warnings']
+        assert any('\u4e00' <= c <= '\u9fff' for c in result['text'])
+        assert result['network_blocked']
+
+
+@pytest.mark.skipif(not (MODEL / 'model/model.bin').exists(), reason='download model first')
 def test_real_worker_translates_with_network_blocked():
     env = dict(os.environ, STM32_TRANSLATE_OFFLINE_TEST='1', PYTHONUTF8='1')
     p = subprocess.run([sys.executable, str(ROOT / 'run.py'), '--worker', '--model', str(MODEL)],

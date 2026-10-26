@@ -4,7 +4,7 @@ Windows 10/11 64 位离线英译中小窗，适合阅读 STM32 函数注释和�
 
 ## 开始使用
 
-从 [GitHub Releases](https://github.com/Hao-ming-Liu/STM32Translate/releases/latest) 下载 `STM32Translate-1.0.0-win64-full.zip`（包含离线模型及运行库，无需安装 Python）。源码 ZIP 不包含模型和运行库。
+从 [GitHub Releases](https://github.com/Hao-ming-Liu/STM32Translate/releases/latest) 下载 `STM32Translate-1.0.1-win64-full.zip`（包含离线模型及运行库，无需安装 Python）。源码 ZIP 不包含模型和运行库。
 
 1. **先完整解压 ZIP**，打开 `STM32Translate` 文件夹。
 2. 双击 **STM32Translate.exe**。首次启动会显示小窗，后台留有蓝色“译”字托盘图标。
@@ -23,7 +23,7 @@ Windows 10/11 64 位离线英译中小窗，适合阅读 STM32 函数注释和�
 
 ## 术语记忆与联网查词
 
-选择一个英文词，点击“联网查词”，会在默认浏览器打开附带 STM32 上下文的 Bing 搜索。整段过长时会让你输入查询词。**浏览器查询需要联网，离线翻译不需要。**
+点击“联网查词”，会用输入框中的完整原文加上 `英译中（STM32）` 在默认浏览器打开 Bing 搜索，例如 `PRESENT 英译中（STM32）`。只有原文为空时才询问查询词。**浏览器查询需要联网，离线翻译不需要。**
 
 确认中文解释后点“保存术语”，填写英文及中文即可。再次保存同名术语会更新释义；同一对话框也可删除已存词条。
 

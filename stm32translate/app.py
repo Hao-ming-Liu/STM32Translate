@@ -282,11 +282,11 @@ class App:
         return text if len(text) <= 120 and '\n' not in text else ''
 
     def lookup(self):
-        term = self.selected_term()
+        term = self.get_source().strip()
         if not term:
             term = simpledialog.askstring('联网查词', '输入要查询的英文术语：', parent=self.root)
         if term and term.strip():
-            url = 'https://www.bing.com/search?' + urlencode({'q': term.strip() + ' STM32 中文 含义'})
+            url = 'https://www.bing.com/search?' + urlencode({'q': term.strip() + ' 英译中（STM32）'})
             try:
                 webbrowser.open(url)
             except Exception as exc:

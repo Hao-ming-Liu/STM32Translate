@@ -1,21 +1,47 @@
 {
+  "version": "1.0.1",
   "archive_crc": "pass",
   "model_hashes": "pass",
-  "extracted_worker_result": {
-    "id": 1,
-    "text": "预缩放值必须在0到65535之间.",
-    "warnings": [],
-    "elapsed": 0.6519590000389144,
-    "pid": 2828,
-    "network_blocked": true
-  },
-  "gui_store_ready_seconds": 0.6149832999799401,
-  "gui_idle_rss_mib": 48.0,
-  "gui_modules": [
-    "STM32Translate/_internal/python312.dll",
-    "STM32Translate/_internal/tcl86t.dll",
-    "STM32Translate/_internal/tk86t.dll"
+  "extracted_worker_results": [
+    {
+      "id": 0,
+      "text": "预缩放值必须在0到65535之间.",
+      "warnings": [],
+      "elapsed": 0.5470864999806508,
+      "pid": 14452,
+      "network_blocked": true
+    },
+    {
+      "id": 1,
+      "text": "当前",
+      "warnings": [],
+      "elapsed": 0.01312420004978776,
+      "pid": 14452,
+      "network_blocked": true
+    },
+    {
+      "id": 2,
+      "text": "设备存在。",
+      "warnings": [],
+      "elapsed": 0.02008779998868704,
+      "pid": 14452,
+      "network_blocked": true
+    },
+    {
+      "id": 3,
+      "text": "启用计时器",
+      "warnings": [],
+      "elapsed": 0.024605599930509925,
+      "pid": 14452,
+      "network_blocked": true
+    }
   ],
-  "note": "Hidden GUI startup smoke test; store-ready time is not time to first paint.",
-  "module_paths_note": "Paths made relative to the release folder for publication."
+  "gui_store_ready_seconds": 0.5287175999255851,
+  "gui_idle_rss_mib": 48.15625,
+  "gui_modules": [
+    "_internal\\tcl86t.dll",
+    "_internal\\python312.dll",
+    "_internal\\tk86t.dll"
+  ],
+  "note": "Hidden GUI startup smoke test; store-ready time is not time to first paint."
 }

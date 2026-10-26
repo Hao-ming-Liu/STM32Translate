@@ -4,6 +4,7 @@ import tkinter as tk
 import pytest
 
 from stm32translate.app import App
+from urllib.parse import urlparse, parse_qs
 
 
 @pytest.fixture(scope='module')
@@ -93,3 +94,20 @@ def test_editing_source_invalidates_inflight_output(app):
     app.set_source('second')
     app.handle_result({'id': old, 'text': '第一段结果', 'warnings': []})
     assert app.last_translation != '第一段结果'
+
+
+@pytest.mark.parametrize('source', ['PRESENT', 'Enable the timer.\n' * 12])
+def test_online_lookup_uses_complete_source_and_requested_suffix(app, monkeypatch, source):
+    opened = []
+    app.set_source(source)
+    app.output.configure(state='normal')
+    app.output.delete('1.0', 'end')
+    app.output.insert('1.0', 'GPIO 错误的译文查询内容')
+    app.output.tag_add('sel', '1.0', 'end')
+    app.output.configure(state='disabled')
+    monkeypatch.setattr('stm32translate.app.webbrowser.open', opened.append)
+    monkeypatch.setattr('stm32translate.app.simpledialog.askstring', lambda *a, **k: pytest.fail('已有原文时不应再次询问'))
+    app.lookup()
+    assert len(opened) == 1
+    assert parse_qs(urlparse(opened[0]).query)['q'] == [source.strip() + ' 英译中（STM32）']
+    app.output.tag_remove('sel', '1.0', 'end')

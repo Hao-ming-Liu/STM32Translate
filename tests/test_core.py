@@ -8,6 +8,26 @@ from stm32translate.store import Store
 from stm32translate.controller import RequestState
 
 
+@pytest.mark.parametrize('source', ['PRESENT', 'THE DEVICE IS PRESENT.', 'ENABLE THE TIMER'])
+def test_uppercase_english_reaches_the_translator(source):
+    seen = []
+    def batch(parts):
+        seen.extend(parts)
+        return ['中文译文' for _ in parts]
+    result = translate_document(source, batch)
+    assert seen == [source.lower()]
+    assert result.text == '中文译文' and not result.warnings
+
+
+def test_uppercase_prose_preserves_hardware_tokens_and_declared_macros():
+    source = '#define PRESENT 1\n// PRESENT ENABLES GPIO AND DMA ON STM32 USING GPIO_PIN_5.'
+    def batch(parts):
+        return [p.replace('enables', '使能').replace('and', '与').replace('on', '位于').replace('using', '使用') for p in parts]
+    result = translate_document(source, batch)
+    assert result.text == '#define PRESENT 1\n// PRESENT 使能 GPIO 与 DMA 位于 STM32 使用 GPIO_PIN_5.'
+    assert not result.warnings
+
+
 def test_doxygen_parameter_and_code_are_preserved():
     source = '/**\n * @param[in] GPIOx Select the GPIO peripheral.\n * @retval None\n */\nvoid HAL_GPIO_Init(GPIO_TypeDef *GPIOx);'
     def batch(parts):

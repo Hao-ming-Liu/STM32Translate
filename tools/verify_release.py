@@ -79,7 +79,7 @@ def main():
         idle_elapsed = time.monotonic()-started
     finally:
         client.close()
-    archive = ROOT / 'dist/STM32Translate-1.0.0-win64-full.zip'
+    archive = ROOT / 'dist/STM32Translate-1.0.1-win64-full.zip'
     summary = {
         'os':sys.getwindowsversion().build,
         'network_test':'Python socket connection and DNS APIs disabled inside worker; PATH contains only Windows System32; no system network adapters changed.',
