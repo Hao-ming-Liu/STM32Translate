@@ -10,6 +10,7 @@ from urllib.parse import urlencode
 from stm32translate import native
 from stm32translate.controller import RequestState, WorkerClient
 from stm32translate.resources import app_root, data_directory, CACHE_NAMESPACE, make_icon
+from stm32translate.documents import has_protected_tokens
 from stm32translate.store import Store
 
 
@@ -102,6 +103,7 @@ class App:
         self.output.tag_configure('muted', foreground='#64748b', font=('Microsoft YaHei UI', 9))
         self.output.tag_configure('terms', foreground='#166534', font=('Microsoft YaHei UI', 9))
         self.output.tag_configure('warning', foreground='#a16207', font=('Microsoft YaHei UI', 9))
+        self.output.tag_configure('translated_term', foreground='#dc2626')
         self._write('粘贴英文注释，快速读懂参数说明。\n\nCtrl+Enter 翻译 · Esc 收起', 'muted')
         actions = ttk.Frame(outer)
         actions.grid(row=3, column=0, sticky='ew', pady=(7, 3))
@@ -205,20 +207,28 @@ class App:
             return
         term = self.store.exact_term(text)
         if term:
-            self.render(term['meaning'], [], '本地术语 · 无需加载模型')
+            ranges = [[0, len(term['meaning'])]] if has_protected_tokens(text) else []
+            self.render(term['meaning'], [], '本地术语 · 无需加载模型', ranges)
             return
         cached = self.store.cache_get(text, CACHE_NAMESPACE)
         if cached:
-            self.render(cached['text'], cached['warnings'], '本地缓存')
+            self.render(cached['text'], cached['warnings'], '本地缓存', cached.get('highlights', []))
             return
         self.last_translation = ''
         self._write('正在离线翻译…\n首次查询需要加载模型。', 'muted')
         self.status.set('翻译中，可继续复制下一段…')
         self.client.submit(request_id, text)
 
-    def render(self, text, warnings, status):
+    def render(self, text, warnings, status, highlights=None):
         self.last_translation = text
         self._write(text)
+        for start, end in highlights or []:
+            if 0 <= start < end <= len(text):
+                # Text's +Nc counts characters, including a supplementary
+                # Unicode character once (unlike Tcl string length).
+                self.output.tag_add('translated_term', f'1.0+{start}c', f'1.0+{end}c')
+        if highlights:
+            status += ' · 红色为原保护词的译文'
         terms = self.store.match_terms(self.state.source)
         if terms:
             self._write('\n\n已存术语\n' + '\n'.join(t['term'] + '：' + t['meaning'] for t in terms), 'terms', append=True)
@@ -237,10 +247,10 @@ class App:
             self.status.set('翻译未完成，可以重试。')
             return
         try:
-            self.store.cache_put(self.state.source, CACHE_NAMESPACE, result['text'], result.get('warnings', []))
+            self.store.cache_put(self.state.source, CACHE_NAMESPACE, result['text'], result.get('warnings', []), result.get('highlights', []))
         except Exception:
             self.status.set('译文已生成，缓存未能写入。')
-        self.render(result['text'], result.get('warnings', []), f"离线完成 · {result.get('elapsed', 0):.1f} 秒")
+        self.render(result['text'], result.get('warnings', []), f"离线完成 · {result.get('elapsed', 0):.1f} 秒", result.get('highlights', []))
 
     def poll(self):
         if self.closed:

@@ -1,7 +1,7 @@
 """Translate comment prose while keeping source structure and code intact."""
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from collections import Counter
 import re
 from typing import Callable
@@ -11,6 +11,7 @@ from typing import Callable
 class Translation:
     text: str
     warnings: list[str]
+    highlights: list[list[int]] = field(default_factory=list)
 
 
 # Only high-confidence technical tokens; ordinary English remains translatable.
@@ -144,7 +145,30 @@ def _validate_literal(text: str, tokens: list[tuple[str, str]]) -> bool:
                for value, count in identifiers.items())
 
 
-def translate_document(text: str, batch_translate: Callable[[list[str]], list[str]]) -> Translation:
+def _translated_tokens(text, tokens, meanings):
+    """Replace exact token occurrences and return ranges in the resulting text."""
+    originals = sorted({original for marker, original in tokens if not marker.startswith('NUM:')}, key=len, reverse=True)
+    if not originals:
+        return text, []
+    pattern = re.compile(r'(?<![A-Za-z0-9_])(?:' + '|'.join(re.escape(s) for s in originals) + r')(?![A-Za-z0-9_])')
+    parts, spans, cursor, size = [], [], 0, 0
+    for match in pattern.finditer(text):
+        prefix = text[cursor:match.start()]
+        value = meanings.get(match.group(), match.group())
+        parts.extend((prefix, value))
+        size += len(prefix)
+        spans.append([size, size + len(value)])
+        size += len(value)
+        cursor = match.end()
+    parts.append(text[cursor:])
+    return ''.join(parts), spans
+
+
+def has_protected_tokens(text: str) -> bool:
+    return bool(_protect(text, set())[1])
+
+
+def translate_document(text: str, batch_translate: Callable[[list[str]], list[str]], *, translate_protected: bool = True) -> Translation:
     if not text.strip():
         return Translation('', [])
     # A segment is (literal, translatable, original, protected tokens).
@@ -201,11 +225,23 @@ def translate_document(text: str, batch_translate: Callable[[list[str]], list[st
             requests.append(protected)
         layout.append((suffix + ending, False, '', []))
     responses = iter(batch_translate(requests) if requests else [])
-    output, warnings = [], []
+    # Keep sentence scaffolding for exact red ranges, but translate each former
+    # protected word too. Repeated words share one inference within a request.
+    words = list(dict.fromkeys(original for _, active, _, tokens in layout if active for marker, original in tokens
+                              if not marker.startswith('NUM:')))
+    meanings = {}
+    if translate_protected and words:
+        translations = batch_translate(words)
+        if len(translations) != len(words):
+            raise ValueError('术语翻译结果数量不匹配')
+        meanings = {word: value.strip() or word for word, value in zip(words, translations)}
+    output, warnings, highlights = [], [], []
+    offset = 0
     count = 0
     for value, translate, original, tokens in layout:
         if not translate:
             output.append(value)
+            offset += len(value)
             continue
         try:
             translated = next(responses)
@@ -220,10 +256,13 @@ def translate_document(text: str, batch_translate: Callable[[list[str]], list[st
             if _validate_literal(retry[0], tokens):
                 restored = retry[0]
         if restored is None:
-            output.append(original)
-            warnings.append(f'第 {count} 个片段的代码标识符或数值未能安全恢复，已保留该片段原文。')
-        else:
-            output.append(restored)
+            restored = original
+            warnings.append(f'第 {count} 个片段的词语位置未能可靠恢复，部分正文保留原文供核对。')
+        if translate_protected:
+            restored, spans = _translated_tokens(restored, tokens, meanings)
+            highlights.extend([[offset + a, offset + b] for a, b in spans])
+        output.append(restored)
+        offset += len(restored)
     if next(responses, None) is not None:
         raise ValueError('翻译结果数量不匹配')
-    return Translation(''.join(output), warnings)
+    return Translation(''.join(output), warnings, highlights)

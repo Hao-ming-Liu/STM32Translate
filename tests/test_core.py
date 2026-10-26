@@ -3,7 +3,11 @@ import sqlite3
 
 import pytest
 
-from stm32translate.documents import translate_document, split_for_model
+from stm32translate.documents import translate_document as _translate_document, split_for_model
+from functools import partial
+# Exercise the structural restoration stage independently of term translation.
+# The new default policy and red ranges are covered in test_red_translation.py.
+translate_document = partial(_translate_document, translate_protected=False)
 from stm32translate.store import Store
 from stm32translate.controller import RequestState
 

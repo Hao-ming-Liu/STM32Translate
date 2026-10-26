@@ -37,6 +37,7 @@ def main(model_dir: Path):
                 raise ValueError('单次输入最多 30000 字符，请拆分后翻译；原文未被截断。')
             result = translate_document(text, translate_batch)
             response = {'id': request_id, 'text': result.text, 'warnings': result.warnings,
+                        'highlights': result.highlights,
                         'elapsed': time.perf_counter() - started, 'pid': os.getpid(), 'network_blocked': blocked}
         except Exception as exc:
             response = {'id': request_id, 'error': str(exc), 'elapsed': time.perf_counter() - started}

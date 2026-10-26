@@ -7,6 +7,32 @@ from stm32translate.app import App
 from urllib.parse import urlparse, parse_qs
 
 
+def test_red_words_render_and_survive_cache_reuse(app):
+    from stm32translate.resources import CACHE_NAMESPACE
+    source = 'Enable GPIO.'
+    app.set_source(source)
+    request_id = app.state.begin(source)
+    app.handle_result({'id':request_id, 'text':'使能 通用输入输出', 'warnings':[], 'highlights':[[3,9]]})
+    ranges = app.output.tag_ranges('translated_term')
+    assert len(ranges) == 2
+    assert app.output.get(*ranges) == '通用输入输出'
+    assert app.output.tag_cget('translated_term', 'foreground') == '#dc2626'
+    assert app.store.cache_get(source, CACHE_NAMESPACE)['highlights'] == [[3,9]]
+    app.translate()
+    assert app.output.get(*app.output.tag_ranges('translated_term')) == '通用输入输出'
+
+
+def test_red_ranges_after_emoji_and_local_term(app):
+    app.render('😀 通用输入输出', [], '测试', [[2,8]])
+    ranges = app.output.tag_ranges('translated_term')
+    assert [app.output.get(ranges[i], ranges[i+1]) for i in range(0, len(ranges), 2)] == ['通用输入输出']
+    app.set_source('GPIO')
+    app.translate()
+    assert app.output.get(*app.output.tag_ranges('translated_term')) == app.last_translation
+    app.render('普通译文', [], '测试')
+    assert not app.output.tag_ranges('translated_term')
+
+
 @pytest.fixture(scope='module')
 def window_app(tmp_path_factory):
     root = tk.Tk()

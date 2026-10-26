@@ -37,7 +37,7 @@ def main():
     shutil.copyfile(ROOT / 'README.md', folder / '使用说明.txt')
     shutil.copyfile(ROOT / 'models/en_zh/SOURCE.json', folder / 'MODEL_INFO.json')
     # Clipboard, cache, saved terms and test data never ship in the portable archive.
-    archive = dist_dir / 'STM32Translate-1.0.1-win64-full.zip'
+    archive = dist_dir / 'STM32Translate-1.0.2-win64-full.zip'
     with zipfile.ZipFile(archive, 'w', zipfile.ZIP_DEFLATED, compresslevel=6) as z:
         for path in sorted(folder.rglob('*')):
             rel = path.relative_to(folder)

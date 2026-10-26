@@ -43,6 +43,9 @@ class Store:
                 key TEXT UNIQUE NOT NULL, result TEXT NOT NULL, warnings TEXT NOT NULL
             );
         ''')
+        if 'highlights' not in {row[1] for row in self.db.execute('PRAGMA table_info(cache)')}:
+            self.db.execute("ALTER TABLE cache ADD COLUMN highlights TEXT NOT NULL DEFAULT '[]'")
+            self.db.commit()
 
     def __enter__(self):
         return self
@@ -107,13 +110,13 @@ class Store:
         return hashlib.sha256((model + '\0' + source).encode('utf8')).hexdigest()
 
     def cache_get(self, source: str, model: str) -> dict | None:
-        row = self.db.execute('SELECT result, warnings FROM cache WHERE key=?', (self._cache_key(source, model),)).fetchone()
+        row = self.db.execute('SELECT result, warnings, highlights FROM cache WHERE key=?', (self._cache_key(source, model),)).fetchone()
         if not row:
             return None
-        return {'text': row[0], 'warnings': json.loads(row[1])}
+        return {'text': row[0], 'warnings': json.loads(row[1]), 'highlights': json.loads(row[2])}
 
-    def cache_put(self, source: str, model: str, result: str, warnings: list[str]):
+    def cache_put(self, source: str, model: str, result: str, warnings: list[str], highlights=None):
         with self.db:
-            self.db.execute('INSERT OR REPLACE INTO cache(key,result,warnings) VALUES (?,?,?)',
-                            (self._cache_key(source, model), result, json.dumps(warnings, ensure_ascii=False)))
+            self.db.execute('INSERT OR REPLACE INTO cache(key,result,warnings,highlights) VALUES (?,?,?,?)',
+                            (self._cache_key(source, model), result, json.dumps(warnings, ensure_ascii=False), json.dumps(highlights or [])))
             self.db.execute('DELETE FROM cache WHERE id NOT IN (SELECT id FROM cache ORDER BY id DESC LIMIT ?)', (self.limit,))

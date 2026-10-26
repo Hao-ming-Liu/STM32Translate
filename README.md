@@ -4,7 +4,7 @@ Windows 10/11 64 位离线英译中小窗，适合阅读 STM32 函数注释和�
 
 ## 开始使用
 
-从 [GitHub Releases](https://github.com/Hao-ming-Liu/STM32Translate/releases/latest) 下载 `STM32Translate-1.0.1-win64-full.zip`（包含离线模型及运行库，无需安装 Python）。源码 ZIP 不包含模型和运行库。
+从 [GitHub Releases](https://github.com/Hao-ming-Liu/STM32Translate/releases/latest) 下载 `STM32Translate-1.0.2-win64-full.zip`（包含离线模型及运行库，无需安装 Python）。源码 ZIP 不包含模型和运行库。
 
 1. **先完整解压 ZIP**，打开 `STM32Translate` 文件夹。
 2. 双击 **STM32Translate.exe**。首次启动会显示小窗，后台留有蓝色“译”字托盘图标。
@@ -37,7 +37,7 @@ Windows 10/11 64 位离线英译中小窗，适合阅读 STM32 函数注释和�
 - CPU 推理，不需要显卡或 CUDA。模型按需加载，闲置约五分钟后释放；本地术语与缓存不需要加载模型。
 - 默认不开机自启；没有 OCR、语音、联网自动更新或账号同步。
 - 单次最多 30000 字符。过长输入会明确提示拆分，不会静默丢弃尾部。
-- Doxygen 标签、参数名、代码行尽量原样保留。正文中的标识符及数值会保护并校验；恢复失败的片段显示原文和提示。
+- Doxygen 标签、参数名、代码行尽量原样保留。正文中原先保护的术语与标识符也参与翻译，对应结果显示为红色（模型未能翻译而原样返回时也标红）；数值继续校验并保留。为准确定位颜色，术语单独翻译后放回句子，可能缺少上下文。定位失败时部分正文保留原文并提示。
 
 这是通用离线翻译模型，专业词可能译得生硬。对照原文和保存的术语释义阅读，尤其注意否定条件、参数范围与返回值。
 

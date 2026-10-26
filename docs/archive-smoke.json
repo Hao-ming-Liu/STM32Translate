@@ -1,5 +1,5 @@
 {
-  "version": "1.0.1",
+  "version": "1.0.2",
   "archive_crc": "pass",
   "model_hashes": "pass",
   "extracted_worker_results": [
@@ -7,41 +7,52 @@
       "id": 0,
       "text": "预缩放值必须在0到65535之间.",
       "warnings": [],
-      "elapsed": 0.5470864999806508,
-      "pid": 14452,
+      "highlights": [],
+      "elapsed": 0.6320444000884891,
+      "pid": 52160,
       "network_blocked": true
     },
     {
       "id": 1,
       "text": "当前",
       "warnings": [],
-      "elapsed": 0.01312420004978776,
-      "pid": 14452,
+      "highlights": [],
+      "elapsed": 0.01410029991529882,
+      "pid": 52160,
       "network_blocked": true
     },
     {
       "id": 2,
       "text": "设备存在。",
       "warnings": [],
-      "elapsed": 0.02008779998868704,
-      "pid": 14452,
+      "highlights": [],
+      "elapsed": 0.023776500020176172,
+      "pid": 52160,
       "network_blocked": true
     },
     {
       "id": 3,
       "text": "启用计时器",
       "warnings": [],
-      "elapsed": 0.024605599930509925,
-      "pid": 14452,
+      "highlights": [],
+      "elapsed": 0.023220299975946546,
+      "pid": 52160,
+      "network_blocked": true
+    },
+    {
+      "id": 4,
+      "text": "将 TIM_ 预缩放器 设定为 50.",
+      "warnings": [],
+      "highlights": [
+        [
+          2,
+          11
+        ]
+      ],
+      "elapsed": 0.07029529998544604,
+      "pid": 52160,
       "network_blocked": true
     }
   ],
-  "gui_store_ready_seconds": 0.5287175999255851,
-  "gui_idle_rss_mib": 48.15625,
-  "gui_modules": [
-    "_internal\\tcl86t.dll",
-    "_internal\\python312.dll",
-    "_internal\\tk86t.dll"
-  ],
-  "note": "Hidden GUI startup smoke test; store-ready time is not time to first paint."
+  "gui_startup": "skipped explicitly to preserve the running user instance"
 }

@@ -3,7 +3,7 @@ import os
 import sys
 import tempfile
 
-CACHE_NAMESPACE = 'argos-en_zh-1.9:433e7c4f:protection-v4'
+CACHE_NAMESPACE = 'argos-en_zh-1.9:433e7c4f:red-terms-v5'
 
 
 def app_root() -> Path:
